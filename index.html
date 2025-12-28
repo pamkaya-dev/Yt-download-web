@@ -214,7 +214,7 @@ function createBubble() {
   bubble.style.left = Math.random() * 100 + '%';
 
   // Random animation duration (fast bubbles)
-  bubble.style.animationDuration = (Math.random() * 1 + 1) + 's';
+  bubble.style.animationDuration = (Math.random() * 2 + 2) + 's';
 
   bubbleBg.appendChild(bubble);
 
@@ -226,6 +226,7 @@ function createBubble() {
 
 // Create dense bubbles continuously
 setInterval(createBubble, 20); // every 0.02s → very dense
+  
 async function fetchVideo() {
   const yt = document.getElementById("yturl").value;
   if (!yt) return alert("Paste YouTube link");
