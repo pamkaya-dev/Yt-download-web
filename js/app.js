@@ -6,7 +6,7 @@ async function fetchVideo() {
   document.getElementById("videoList").innerHTML = "";
   document.getElementById("audioList").innerHTML = "";
 
-  const API = `https://api.bk9.dev/download/yt?url=${encodeURIComponent(yt)}`;
+  const API = `https://api.bk9.dev/download/youtube?url==${encodeURIComponent(yt)}`;
 
   try {
     const res = await fetch(API);
