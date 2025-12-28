@@ -1,54 +1,51 @@
 async function fetchVideo() {
-  const url = document.getElementById("yturl").value;
-  if (!url) return alert("Paste YouTube link");
+  const yt = document.getElementById("yturl").value;
+  if (!yt) return alert("Paste YouTube link");
 
   document.getElementById("title").innerText = "Loading...";
-  document.getElementById("thumb").src = "";
   document.getElementById("videoList").innerHTML = "";
   document.getElementById("audioList").innerHTML = "";
-  document.getElementById("player").src = "";
+
+  /* 🔴 BK9 API */
+  const API = `https://api.bk9.dev/download/yt?url=${encodeURIComponent(yt)}`;
 
   try {
-    const API = `https://api.bk9.dev/download/yt?url=${encodeURIComponent(url)}`;
     const res = await fetch(API);
-    const data = await res.json();
+    const json = await res.json();
 
-    if (!data.status) {
-      document.getElementById("title").innerText = "Error fetching data";
+    if (!json.status) {
+      document.getElementById("title").innerText = "Failed";
       return;
     }
 
-    const info = data.BK9;
-    document.getElementById("title").innerText = info.title;
-    document.getElementById("thumb").src = info.thumbnail;
+    const data = json.BK9;
+    const formats = data.formats;
 
-    // Video list
-    const videos = info.formats.filter(f => f.type === "video");
-    document.getElementById("videoList").innerHTML = videos.map(v => `
-      <a class="download-btn" href="${v.url}" target="_blank" onclick="playVideo('${v.url}'); return false;">
-        ${v.quality} | ${v.fps}fps | ${v.bitrate}
-      </a>
-    `).join("");
+    document.getElementById("title").innerText = data.title;
 
-    // Audio list
-    const audios = info.formats.filter(f => f.type !== "video");
-    document.getElementById("audioList").innerHTML = audios.length
-      ? audios.map(a => `
-          <a class="download-btn" href="${a.url}" target="_blank">
-            Audio | ${a.bitrate || "Unknown"}
-          </a>
-        `).join("")
-      : "<p>No audio formats</p>";
+    /* VIDEO */
+    const videos = formats.filter(f => f.type === "video");
 
-  } catch (err) {
-    console.log(err);
-    document.getElementById("title").innerText = "Error fetching qualities";
+    document.getElementById("videoList").innerHTML =
+      videos.map(v => `
+        <a class="download-btn" href="${v.url}" target="_blank">
+          ${v.quality} | ${v.fps}fps | ${v.bitrate}
+        </a>
+      `).join("");
+
+    /* AUDIO */
+    const audios = formats.filter(f => f.type !== "video");
+
+    document.getElementById("audioList").innerHTML =
+      audios.length
+        ? audios.map(a => `
+            <a class="download-btn" href="${a.url}" target="_blank">
+              Audio | ${a.bitrate || "Unknown"}
+            </a>
+          `).join("")
+        : "<p>No audio formats</p>";
+
+  } catch (e) {
+    document.getElementById("title").innerText = "Error fetching data";
   }
-}
-
-// Play selected video in player
-function playVideo(url) {
-  const player = document.getElementById("player");
-  player.src = url;
-  player.play();
 }
