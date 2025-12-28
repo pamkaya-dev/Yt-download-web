@@ -4,7 +4,15 @@ async function fetchVideo() {
 
   document.getElementById("title").innerText = "Loading...";
   document.getElementById("thumb").src = "";
-  document.getElementById("videoList").innerHTML = "";
+  document.getElementById("videoList").innerHTML =
+  videos.map(v => {
+    const sizeMB = v.filesize ? (v.filesize / 1024 / 1024).toFixed(2) : 'Unknown';
+    return `
+      <a class="download-btn" href="${v.url}" target="_blank" download>
+        ${v.quality} | ${v.fps}fps | ${v.bitrate} | ~${sizeMB}MB
+      </a>
+    `;
+  }).join("");
   document.getElementById("audioList").innerHTML = "";
 
   try {
@@ -24,16 +32,15 @@ async function fetchVideo() {
     const formats = data.formats;
 
     // VIDEO
-    const videos = formats.filter(f => f.type === "video");
-    document.getElementById("videoList").innerHTML = videos.map(v => {
-      const sizeMB = v.filesize ? (v.filesize / 1024 / 1024).toFixed(2) : 'Unknown';
-      return `
-        <a class="download-btn" href="${v.url}" target="_blank" download>
-          ${v.quality} | ${v.fps}fps | ${v.bitrate} | ~${sizeMB}MB
-        </a>
-      `;
-    }).join("");
+    /* VIDEO */
+const videos = formats.filter(f => f.type === "video");
 
+document.getElementById("videoList").innerHTML =
+  videos.map(v => `
+    <a class="download-btn" href="${v.url}" target="_blank">
+      ${v.quality} | ${v.fps}fps | ${v.bitrate}
+    </a>
+  `).join("");
     // AUDIO
     const audios = formats.filter(f => f.type !== "video");
     document.getElementById("audioList").innerHTML = audios.length
