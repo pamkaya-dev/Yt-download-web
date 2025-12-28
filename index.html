@@ -4,9 +4,182 @@
 <meta charset="UTF-8">
 <title>YouTube Downloader</title>
 
-<link rel="stylesheet" href="css/style.css">
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+<style>
+/* ===== Global ===== */
+* {
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins', Arial, sans-serif;
+}
+
+body {
+  background:#050505;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:#e5e7eb;
+  position:relative;
+}
+
+/* ===== Bubble Background ===== */
+.bubble-bg {
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  z-index:0;
+  pointer-events:none;
+}
+
+.bubble {
+  position:absolute;
+  bottom:-20px;
+  width:80px;
+  height:88px;
+  background:#ff0000;
+  border-radius:50%;
+  opacity:.6;
+  animation:floatUp linear infinite;
+}
+
+@keyframes floatUp {
+  0% { transform:translateY(0) scale(.5); opacity:.2; }
+  100% { transform:translateY(-150vh) scale(1); opacity:0; }
+}
+
+/* ===== Container ===== */
+.container {
+  max-width:700px;
+  width:100%;
+  padding:20px;
+  text-align:center;
+  position:relative;
+  z-index:1;
+}
+
+/* ===== Heading ===== */
+h1 {
+  color:#ff2222;
+  margin-bottom:20px;
+}
+
+/* ===== Boxes (VIDEO / AUDIO) ===== */
+.box {
+  width:340px;
+  margin:20px auto;
+  padding:26px;
+  background:#0b0b0b;
+  border-radius:18px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ===== Animated Border ===== */
+@property --angle {
+  syntax:"<angle>";
+  initial-value:0deg;
+  inherits:false;
+}
+
+.box::before,
+.box::after {
+  content:"";
+  position:absolute;
+  inset:-3px;
+  border-radius:20px;
+  background:conic-gradient(
+    from var(--angle),
+    #ff0000,
+    #000,
+    #ff0000
+  );
+  z-index:-1;
+  animation:spin 3.5s linear infinite;
+}
+
+.box::before {
+  filter:blur(1.4rem);
+  opacity:.75;
+}
+
+@keyframes spin {
+  to{--angle:360deg;}
+}
+
+/* ===== Titles inside boxes ===== */
+.box h2 {
+  color:#ff0000;
+  margin-bottom:12px;
+}
+
+/* ===== Input ===== */
+input {
+  width:100%;
+  padding:12px;
+  border-radius:6px;
+  border:none;
+  outline:none;
+  margin-bottom:12px;
+  font-size:16px;
+}
+
+/* ===== Button ===== */
+button {
+  padding:12px 20px;
+  background:#ff0000;
+  border:none;
+  border-radius:12px;
+  font-weight:600;
+  color:#fff;
+  cursor:pointer;
+  transition:.25s;
+  box-shadow:0 0 10px #ff0000;
+}
+
+button:hover {
+  background:#000;
+  color:#ff0000;
+  box-shadow:0 0 20px #ff0000, 0 0 40px #ff0000;
+}
+
+/* ===== Video & Audio List Styling ===== */
+#videoList, #audioList {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.download-btn {
+  display:inline-block;
+  padding:8px 14px;
+  background:#ff0000;
+  color:#fff;
+  border-radius:6px;
+  text-decoration:none;
+  font-weight:bold;
+  transition:.25s;
+}
+
+.download-btn:hover {
+  background:#000;
+  color:#ff0000;
+  box-shadow:0 0 15px #ff0000;
+}
+</style>
 </head>
 <body>
+
+<!-- Bubble background -->
+<div class="bubble-bg">
+  <div class="bubble" style="left:10%; width:60px; height:60px;"></div>
+  <div class="bubble" style="left:50%; width:80px; height:80px;"></div>
+  <div class="bubble" style="left:80%; width:50px; height:50px;"></div>
+</div>
 
 <div class="container">
 
@@ -36,4 +209,4 @@
 
 <script src="js/app.js"></script>
 </body>
-</html>
+  </html>
