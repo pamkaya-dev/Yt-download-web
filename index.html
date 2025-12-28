@@ -1,243 +1,283 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>YouTube Downloader</title>
+<meta charset="UTF-8">
+<title>YouTube Downloader</title>
 
-    <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 
-    <style>
-        /* ===== Global ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', Arial, sans-serif;
-        }
-        body {
-            background: #050505;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #e5e7eb;
-            position: relative;
-        }
-        /* ===== Bubble Background ===== */
-        .bubble {
-            position: absolute;
-            bottom: 0;
-            border-radius: 50%;
-            background: #ff0000;
-            opacity: 0.6;
-            animation: floatUp linear forwards;
-        }
-        @keyframes floatUp {
-            0% {
-                transform: translateY(0) scale(0.5);
-                opacity: 0.3;
-            }
+<style>
+/* ===== Global ===== */
+* {
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins', Arial, sans-serif;
+}
 
-            50% {
-                opacity: 0.8;
-            }
+body {
+  background:#050505;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:#e5e7eb;
+  position:relative;
+}
+/* ===== Bubble Background ===== */
+.bubble {
+  position:absolute;
+  bottom:0;
+  border-radius:50%;
+  background:#ff0000;
+  opacity:0.6;
+  animation:floatUp linear forwards;
+}
 
-            100% {
-                transform: translateY(-150vh) scale(1);
-                opacity: 0;
-            }
-        }
-        /* ===== Container ===== */
-        .container {
-            max-width: 700px;
-            width: 100%;
-            padding: 20px;
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
-        /* ===== Heading ===== */
-        h1 {
-            color: #ff2222;
-            margin-bottom: 20px;
-        }
-        /* ===== Boxes (VIDEO / AUDIO) ===== */
-        .box {
-            width: 340px;
-            margin: 20px auto;
-            padding: 26px;
-            background: #0b0b0b;
-            border-radius: 18px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        /* ===== Animated Border ===== */
-        @property --angle {
-            syntax:"<angle>"; initial-value:0deg; inherits:false;
-        }
-        .box::before, .box::after {
-            content: "";
-            position: absolute;
-            inset: -3px;
-            border-radius: 20px;
-            background: conic-gradient(from var(--angle), #ff0000, #000, #ff0000);
-            z-index: -1;
-            animation: spin 3.5s linear infinite;
-        }
-        .box::before {
-            filter: blur(1.4rem);
-            opacity: .75;
-        }
-        @keyframes spin {
-            to {
-                --angle: 360deg;
-            }
-        }
-        /* ===== Titles inside boxes ===== */
-        .box h2 {
-            color: #ff0000;
-            margin-bottom: 12px;
-        }
-        /* ===== Input ===== */
-        input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 6px;
-            border: none;
-            outline: none;
-            margin-bottom: 12px;
-            font-size: 16px;
-        }
-        /* ===== Button ===== */
-        button {
-            padding: 12px 20px;
-            background: #ff0000;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            color: #fff;
-            cursor: pointer;
-            transition: .25s;
-            box-shadow: 0 0 10px #ff0000;
-        }
-        button:hover {
-            background: #000;
-            color: #ff0000;
-            box-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
-        }
-        /* ===== Video & Audio List Styling ===== */
-        #videoList, #audioList {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .download-btn {
-            display: inline-block;
-            padding: 8px 14px;
-            background: #ff0000;
-            color: #fff;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: .25s;
-        }
-        .download-btn:hover {
-            background: #000;
-            color: #ff0000;
-            box-shadow: 0 0 15px #ff0000;
-        }
-    </style>
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(0.5);
+    opacity:0.3;
+  }
+  50% {
+    opacity:0.8;
+  }
+  100% {
+    transform: translateY(-150vh) scale(1);
+    opacity:0;
+  }
+}
+/* ===== Container ===== */
+.container {
+  max-width:700px;
+  width:100%;
+  padding:20px;
+  text-align:center;
+  position:relative;
+  z-index:1;
+}
+
+/* ===== Heading ===== */
+h1 {
+  color:#ff2222;
+  margin-bottom:20px;
+}
+
+/* ===== Boxes (VIDEO / AUDIO) ===== */
+.box {
+  width:340px;
+  margin:20px auto;
+  padding:26px;
+  background:#0b0b0b;
+  border-radius:18px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ===== Animated Border ===== */
+@property --angle {
+  syntax:"<angle>";
+  initial-value:0deg;
+  inherits:false;
+}
+
+.box::before,
+.box::after {
+  content:"";
+  position:absolute;
+  inset:-3px;
+  border-radius:20px;
+  background:conic-gradient(
+    from var(--angle),
+    #ff0000,
+    #000,
+    #ff0000
+  );
+  z-index:-1;
+  animation:spin 3.5s linear infinite;
+}
+
+.box::before {
+  filter:blur(1.4rem);
+  opacity:.75;
+}
+
+@keyframes spin {
+  to{--angle:360deg;}
+}
+
+/* ===== Titles inside boxes ===== */
+.box h2 {
+  color:#ff0000;
+  margin-bottom:12px;
+}
+
+/* ===== Input ===== */
+input {
+  width:100%;
+  padding:12px;
+  border-radius:6px;
+  border:none;
+  outline:none;
+  margin-bottom:12px;
+  font-size:16px;
+}
+
+/* ===== Button ===== */
+button {
+  padding:12px 20px;
+  background:#ff0000;
+  border:none;
+  border-radius:12px;
+  font-weight:600;
+  color:#fff;
+  cursor:pointer;
+  transition:.25s;
+  box-shadow:0 0 10px #ff0000;
+}
+
+button:hover {
+  background:#000;
+  color:#ff0000;
+  box-shadow:0 0 20px #ff0000, 0 0 40px #ff0000;
+}
+
+/* ===== Video & Audio List Styling ===== */
+#videoList, #audioList {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.download-btn {
+  display:inline-block;
+  padding:8px 14px;
+  background:#ff0000;
+  color:#fff;
+  border-radius:6px;
+  text-decoration:none;
+  font-weight:bold;
+  transition:.25s;
+}
+
+.download-btn:hover {
+  background:#000;
+  color:#ff0000;
+  box-shadow:0 0 15px #ff0000;
+}
+</style>
 </head>
 <body>
 
-    <div class="bubble-bg">
-        <div class="container">
+<div class="bubble-bg">
+<div class="container">
 
-            <h1>🎬 DTZ YT DOWNLOADER</h1>
+  <h1>🎬 DTZ YT DOWNLOADER</h1>
 
-            <input id="yturl" type="text" placeholder="Paste YouTube link here">
+  <input
+    id="yturl"
+    type="text"
+    placeholder="Paste YouTube link here"
+  >
 
-            <button onclick="fetchVideo()">Fetch Qualities</button>
+  <button onclick="fetchVideo()">Fetch Qualities</button>
 
-            <h3 id="title"></h3>
+  <h3 id="title"></h3>
 
-            <div class="box">
-                <h2>📹 VIDEO</h2>
-                <div id="videoList"></div>
-            </div>
+  <div class="box">
+    <h2>📹 VIDEO</h2>
+    <div id="videoList"></div>
+  </div>
 
-            <div class="box">
-                <h2>🎵 AUDIO</h2>
-                <div id="audioList"></div>
-            </div>
+  <div class="box">
+    <h2>🎵 AUDIO</h2>
+    <div id="audioList"></div>
+  </div>
 
-        </div>
-       <div id="container-8c06e5ad21f34bd1f3b7fefacc40ec69"></div>
-        <script>
-            async ="async" data-cfasync="false" src="https://pl28353885.effectivegatecpm.com/8c06e5ad21f34bd1f3b7fefacc40ec69/invoke.js";
-   
-         const bubbleBg = document.querySelector('.bubble-bg');
-            function createBubble() {
-                const bubble = document.createElement('div');
-                bubble.classList.add('bubble');
-                const size = Math.random() * 8 + 4;
-                bubble.style.width = size + 'px';
-                bubble.style.height = size + 'px';
-                bubble.style.left = Math.random() * 100 + '%';
-                bubble.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                bubbleBg.appendChild(bubble);
-                setTimeout(() => {
-                    bubble.remove();
-                }, 2500);
-            }
-            setInterval(createBubble, 20);
+</div>
 
-            async function fetchVideo() {
-                const yt = document.getElementById("yturl").value;
-                if (!yt) return alert("Paste YouTube link");
+<script>
+const bubbleBg = document.querySelector('.bubble-bg');
 
-                document.getElementById("title").innerText = "Loading...";
-                document.getElementById("videoList").innerHTML = "";
-                document.getElementById("audioList").innerHTML = "";
+function createBubble() {
+  const bubble = document.createElement('div');
+  bubble.classList.add('bubble');
 
-                const API = `https://api.bk9.dev/download/youtube?url=${encodeURIComponent(yt)}`;
+  // Random size 4px – 12px
+  const size = Math.random() * 8 + 4;
+  bubble.style.width = size + 'px';
+  bubble.style.height = size + 'px';
 
-                try {
-                    const res = await fetch(API);
-                    const json = await res.json();
+  // Random horizontal position
+  bubble.style.left = Math.random() * 100 + '%';
 
-                    if (!json.status) {
-                        document.getElementById("title").innerText = "Failed";
-                        return;
-                    }
+  // Random animation duration (fast bubbles)
+  bubble.style.animationDuration = (Math.random() * 2 + 2) + 's';
 
-                    const data = json.BK9;
-                    const formats = data.formats;
-                    document.getElementById("title").innerText = data.title;
+  bubbleBg.appendChild(bubble);
 
-                    const videos = formats.filter(f => f.type === "video");
-                    document.getElementById("videoList").innerHTML =
-                    videos.map(v => `
-                        <a class="download-btn" href="${v.url}" download>
-                        ${v.quality} | ${v.fps}fps | ${v.bitrate}
-                        </a>
-                        `).join("");
+  // Remove bubble after animation
+  setTimeout(() => {
+    bubble.remove();
+  }, 2500); // slightly longer than max animation duration
+}
 
-                    const audios = formats.filter(f => f.type !== "video");
-                    document.getElementById("audioList").innerHTML =
-                    audios.length
-                    ? audios.map(a => `
-                        <a class="download-btn" href="${a.url}" download>
-                        Audio | ${a.bitrate || "Unknown"}
-                        </a>
-                        `).join(""): "<p>No audio formats</p>";
+// Create dense bubbles continuously
+setInterval(createBubble, 20); // every 0.02s → very dense
+  
+async function fetchVideo() {
+  const yt = document.getElementById("yturl").value;
+  if (!yt) return alert("Paste YouTube link");
 
-                } catch (e) {
-                    document.getElementById("title").innerText = "Error fetching data";
-                }
-            }
-        </script>
-    </body>
+  document.getElementById("title").innerText = "Loading...";
+  document.getElementById("videoList").innerHTML = "";
+  document.getElementById("audioList").innerHTML = "";
+
+  /* 🔴 BK9 API */
+  const API = `https://api.bk9.dev/download/youtube?url=${encodeURIComponent(yt)}`;
+
+  try {
+    const res = await fetch(API);
+    const json = await res.json();
+
+    if (!json.status) {
+      document.getElementById("title").innerText = "Failed";
+      return;
+    }
+
+    const data = json.BK9;
+    const formats = data.formats;
+
+    document.getElementById("title").innerText = data.title;
+
+    /* VIDEO */
+    const videos = formats.filter(f => f.type === "video");
+
+    document.getElementById("videoList").innerHTML =
+      videos.map(v => `
+        <a class="download-btn" href="${v.url}" target="_blank" download>
+          ${v.quality} | ${v.fps}fps | ${v.bitrate}
+        </a>
+      `).join("");
+
+    /* AUDIO */
+    const audios = formats.filter(f => f.type !== "video");
+
+    document.getElementById("audioList").innerHTML =
+      audios.length
+        ? audios.map(a => `
+            <a class="download-btn" href="${a.url}" target="_blank" download>
+              Audio | ${a.bitrate || "Unknown"}
+            </a>
+          `).join("")
+        : "<p>No audio formats</p>";
+
+  } catch (e) {
+    document.getElementById("title").innerText = "Error fetching data";
+  }
+}
+</script>
+</body>
 </html>
