@@ -2,20 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>YouTube Downloader</title>
+<title>YouTube Player + Downloader</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <div class="container">
-  <h1>🎬 YouTube Downloader</h1>
+  <h1>🎬 YouTube Player + Downloader</h1>
 
-  <input id="yturl" placeholder="Paste YouTube link here">
-  <button onclick="fetchVideo()">Get Qualities</button>
-
-  <p id="status"></p>
+  <input id="yturl" type="text" placeholder="Paste YouTube link">
+  <button onclick="fetchVideo()">Fetch Qualities</button>
 
   <h3 id="title"></h3>
+  <img id="thumb" src="" alt="" style="max-width:300px;margin:10px 0">
 
   <div class="box">
     <h2>📹 Video</h2>
@@ -25,6 +24,11 @@
   <div class="box">
     <h2>🎵 Audio</h2>
     <div id="audioList"></div>
+  </div>
+
+  <div class="box">
+    <h2>▶️ Play Selected</h2>
+    <video id="player" controls style="width:100%;max-width:600px"></video>
   </div>
 </div>
 
