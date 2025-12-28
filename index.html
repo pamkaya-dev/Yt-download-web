@@ -257,7 +257,7 @@ async function fetchVideo() {
 
     document.getElementById("videoList").innerHTML =
       videos.map(v => `
-        <a class="download-btn" href="${v.url}" target="_blank">
+        <a class="download-btn" href="${v.url}" target="_blank" download>
           ${v.quality} | ${v.fps}fps | ${v.bitrate}
         </a>
       `).join("");
@@ -268,7 +268,7 @@ async function fetchVideo() {
     document.getElementById("audioList").innerHTML =
       audios.length
         ? audios.map(a => `
-            <a class="download-btn" href="${a.url}" target="_blank">
+            <a class="download-btn" href="${a.url}" target="_blank" download>
               Audio | ${a.bitrate || "Unknown"}
             </a>
           `).join("")
