@@ -1,42 +1,66 @@
-body {
-  background: #0b1220;
-  color: #e5e7eb;
-  font-family: Arial;
-  text-align:center;
+* {
+  box-sizing: border-box;
 }
+
+body {
+  background: #020617;
+  color: #e5e7eb;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 .container {
   max-width: 700px;
-  margin:auto;
-  padding:20px;
+  margin: auto;
+  padding: 20px;
+  text-align: center;
 }
+
+h1 {
+  color: #38bdf8;
+}
+
 input {
-  width:80%;
-  padding:10px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  margin-top: 10px;
 }
+
 button {
-  padding:8px 14px;
-  margin:6px;
-  border:none;
-  background:#22c55e;
-  color:#000;
-  cursor:pointer;
+  margin-top: 12px;
+  padding: 10px 20px;
+  background: #22c55e;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
 }
+
 button:hover {
-  background:#16a34a;
+  background: #16a34a;
 }
+
 .box {
-  margin-top:20px;
-  padding:10px;
-  border:1px solid #1e293b;
-  border-radius:8px;
+  margin-top: 30px;
+  background: #020617;
+  border: 1px solid #1e293b;
+  padding: 15px;
+  border-radius: 10px;
 }
+
 .download-btn {
-  display:inline-block;
-  margin:6px;
-  padding:8px 14px;
-  background:#0ea5e9;
-  color:#000;
-  border-radius:6px;
-  text-decoration:none;
+  display: inline-block;
+  margin: 6px;
+  padding: 8px 14px;
+  background: #0ea5e9;
+  color: #000;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
 }
-.download-btn:hover { background:#38bdf8; }
+
+.download-btn:hover {
+  background: #38bdf8;
+}
