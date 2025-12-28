@@ -1,37 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>YouTube Player + Downloader</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Player + Downloader</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="container">
+    <h1>🎬 YouTube Player + Downloader</h1>
 
-<div class="container">
-  <h1>🎬 YouTube Player + Downloader</h1>
+    <input id="yturl" type="text" placeholder="Paste YouTube link here">
+    <button onclick="fetchVideo()">Fetch Qualities</button>
 
-  <input id="yturl" type="text" placeholder="Paste YouTube link">
-  <button onclick="fetchVideo()">Fetch Qualities</button>
+    <h3 id="title">Enter a YouTube link above</h3>
+    <img id="thumb" src="" alt="Thumbnail" style="max-width:300px; margin:10px 0; display:none;">
 
-  <h3 id="title"></h3>
-  <img id="thumb" src="" alt="" style="max-width:300px;margin:10px 0">
+    <div class="box">
+      <h2>📹 Video Formats</h2>
+      <div id="videoList"></div>
+    </div>
 
-  <div class="box">
-    <h2>📹 Video</h2>
-    <div id="videoList"></div>
+    <div class="box">
+      <h2>🎵 Audio Formats</h2>
+      <div id="audioList"></div>
+    </div>
+
+    <div class="box">
+      <h2>▶️ Play Selected</h2>
+      <video id="player" controls style="width:100%; max-width:600px;"></video>
+    </div>
   </div>
 
-  <div class="box">
-    <h2>🎵 Audio</h2>
-    <div id="audioList"></div>
-  </div>
-
-  <div class="box">
-    <h2>▶️ Play Selected</h2>
-    <video id="player" controls style="width:100%;max-width:600px"></video>
-  </div>
-</div>
-
-<script src="js/app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
