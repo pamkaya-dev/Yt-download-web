@@ -202,26 +202,31 @@ button:hover {
 
 <script>
 // Bubbles directly appended to body (fixed missing div issue)
-function createBubble() {
-  const bubble = document.createElement('div');
-  bubble.classList.add('bubble');
+<script>
+// Bubbles code same තියෙන්න...
 
-  const size = Math.random() * 8 + 4;
-  bubble.style.width = size + 'px';
-  bubble.style.height = size + 'px';
-
-  bubble.style.left = Math.random() * 100 + '%';
-
-  bubble.style.animationDuration = (Math.random() * 2 + 2) + 's';
-
-  document.body.appendChild(bubble);
-
-  setTimeout(() => {
-    bubble.remove();
-  }, 4000);
+async function downloadFile(url, filename) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Download failed");
+    
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = blobUrl;
+    a.download = filename;  // මෙතන filename එක force කරනවා
+    document.body.appendChild(a);
+    a.click();
+    
+    window.URL.revokeObjectURL(blobUrl);
+    document.body.removeChild(a);
+  } catch (e) {
+    alert("Download failed! Opening in new tab instead.");
+    window.open(url, '_blank'); // fallback
+  }
 }
-
-setInterval(createBubble, 20);
 
 async function fetchVideo() {
   const yt = document.getElementById("yturl").value.trim();
@@ -248,45 +253,59 @@ async function fetchVideo() {
 
     document.getElementById("title").innerText = data.title || "Unknown Title";
 
-    // Show improved thumbnail (default → hqdefault)
+    // Thumbnail same තියෙන්න...
+
     const thumbImg = document.getElementById("thumbnail");
     let thumbUrl = data.thumbnail || "";
     if (thumbUrl) {
-      // Replace default.jpg with hqdefault.jpg for better quality
       thumbUrl = thumbUrl.split("?")[0].replace("default.jpg", "hqdefault.jpg");
       thumbImg.src = thumbUrl;
       thumbImg.alt = "Thumbnail for " + (data.title || "video");
       thumbImg.style.display = "block";
-    } else {
-      thumbImg.style.display = "none";
     }
 
-    // VIDEO formats
+    // VIDEO
     const videos = formats.filter(f => f.type === "video");
     document.getElementById("videoList").innerHTML = videos.length
-      ? videos.map(v => `
-          <a class="download-btn" href="${v.url}" target="_blank">
-            ${v.quality || "Unknown"} ${v.fps ? `| ${v.fps}fps` : ""} ${v.bitrate ? `| ${v.bitrate}` : ""}
-          </a>
-        `).join("")
+      ? videos.map(v => {
+          const qualityLabel = v.quality || "Unknown";
+          const fps = v.fps ? `${v.fps}fps` : "";
+          const bitrate = v.bitrate ? `| ${v.bitrate}` : "";
+          const ext = v.mime?.includes("webm") ? "webm" : "mp4";
+          const filename = `${data.title || "video"} - ${qualityLabel} ${fps} \( {bitrate}. \){ext}`.replace(/[/\\?%*:|"<>]/g, '-').trim();
+
+          return `
+            <a class="download-btn" href="javascript:void(0)" 
+               onclick="downloadFile('\( {v.url}', ' \){filename}')">
+              ${qualityLabel} ${fps} ${bitrate}
+            </a>
+          `;
+        }).join("")
       : "<p>No video formats available</p>";
 
-    // AUDIO formats
+    // AUDIO
     const audios = formats.filter(f => f.type !== "video");
     document.getElementById("audioList").innerHTML = audios.length
-      ? audios.map(a => `
-          <a class="download-btn" href="${a.url}" target="_blank">
-            Audio ${a.quality ? `| ${a.quality}` : ""} ${a.bitrate ? `| ${a.bitrate}` : ""}
-          </a>
-        `).join("")
+      ? audios.map(a => {
+          const bitrate = a.bitrate ? `| ${a.bitrate}` : "";
+          const ext = a.mime?.includes("webm") ? "webm" : "m4a";
+          const filename = `${data.title || "audio"} - Audio \( {bitrate}. \){ext}`.replace(/[/\\?%*:|"<>]/g, '-').trim();
+
+          return `
+            <a class="download-btn" href="javascript:void(0)" 
+               onclick="downloadFile('\( {a.url}', ' \){filename}')">
+              Audio ${bitrate}
+            </a>
+          `;
+        }).join("")
       : "<p>No audio formats available</p>";
 
   } catch (e) {
     document.getElementById("title").innerText = "Error fetching data";
-    document.getElementById("thumbnail").style.display = "none";
     console.error(e);
   }
 }
+</script>
 </script>
 </body>
 </html>
