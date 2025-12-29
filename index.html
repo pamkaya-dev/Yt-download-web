@@ -171,7 +171,6 @@ button:hover {
 </head>
 <body>
 
-<div class="bubble-bg">
 <div class="container">
 
   <h1>🎬 DTZ YT DOWNLOADER</h1>
@@ -186,6 +185,9 @@ button:hover {
 
   <h3 id="title"></h3>
 
+  <!-- Thumbnail Image -->
+  <img id="thumbnail" alt="Video Thumbnail" style="display:none; max-width:480px; width:100%; height:auto; border-radius:12px; margin:20px auto; box-shadow:0 0 20px rgba(255,0,0,0.5);">
+
   <div class="box">
     <h2>📹 VIDEO</h2>
     <div id="videoList"></div>
@@ -199,83 +201,90 @@ button:hover {
 </div>
 
 <script>
-const bubbleBg = document.querySelector('.bubble-bg');
-
+// Bubbles directly appended to body (fixed missing div issue)
 function createBubble() {
   const bubble = document.createElement('div');
   bubble.classList.add('bubble');
 
-  // Random size 4px – 12px
   const size = Math.random() * 8 + 4;
   bubble.style.width = size + 'px';
   bubble.style.height = size + 'px';
 
-  // Random horizontal position
   bubble.style.left = Math.random() * 100 + '%';
 
-  // Random animation duration (fast bubbles)
   bubble.style.animationDuration = (Math.random() * 2 + 2) + 's';
 
-  bubbleBg.appendChild(bubble);
+  document.body.appendChild(bubble);
 
-  // Remove bubble after animation
   setTimeout(() => {
     bubble.remove();
-  }, 2500); // slightly longer than max animation duration
+  }, 4000);
 }
 
-// Create dense bubbles continuously
-setInterval(createBubble, 20); // every 0.02s → very dense
-  
+setInterval(createBubble, 20);
+
 async function fetchVideo() {
-  const yt = document.getElementById("yturl").value;
+  const yt = document.getElementById("yturl").value.trim();
   if (!yt) return alert("Paste YouTube link");
 
   document.getElementById("title").innerText = "Loading...";
+  document.getElementById("thumbnail").style.display = "none";
   document.getElementById("videoList").innerHTML = "";
   document.getElementById("audioList").innerHTML = "";
 
-  /* 🔴 BK9 API */
   const API = `https://api.bk9.dev/download/youtube?url=${encodeURIComponent(yt)}`;
 
   try {
     const res = await fetch(API);
     const json = await res.json();
 
-    if (!json.status) {
-      document.getElementById("title").innerText = "Failed";
+    if (!json.status || !json.BK9) {
+      document.getElementById("title").innerText = "Failed to fetch data";
       return;
     }
 
     const data = json.BK9;
-    const formats = data.formats;
+    const formats = data.formats || [];
 
-    document.getElementById("title").innerText = data.title;
+    document.getElementById("title").innerText = data.title || "Unknown Title";
 
-    /* VIDEO */
+    // Show improved thumbnail (default → hqdefault)
+    const thumbImg = document.getElementById("thumbnail");
+    let thumbUrl = data.thumbnail || "";
+    if (thumbUrl) {
+      // Replace default.jpg with hqdefault.jpg for better quality
+      thumbUrl = thumbUrl.split("?")[0].replace("default.jpg", "hqdefault.jpg");
+      thumbImg.src = thumbUrl;
+      thumbImg.alt = "Thumbnail for " + (data.title || "video");
+      thumbImg.style.display = "block";
+    } else {
+      thumbImg.style.display = "none";
+    }
+
+    // VIDEO formats
     const videos = formats.filter(f => f.type === "video");
+    document.getElementById("videoList").innerHTML = videos.length
+      ? videos.map(v => `
+          <a class="download-btn" href="${v.url}" target="_blank">
+            ${v.quality || "Unknown"} ${v.fps ? `| ${v.fps}fps` : ""} ${v.bitrate ? `| ${v.bitrate}` : ""}
+          </a>
+        `).join("")
+      : "<p>No video formats available</p>";
 
-    document.getElementById("videoList").innerHTML =
-      videos.map(v => `
-        <a class="download-btn" href="${v.url}" target="_blank" download>
-          ${v.quality} | ${v.fps}fps | ${v.bitrate}
-        </a>
-      `).join("");
-
-    /* AUDIO */
+    // AUDIO formats
     const audios = formats.filter(f => f.type !== "video");
-
-    document.getElementById("audioList").innerHTML =
-      audios.length
-        ? audios.map(a => `
-            <a class="download-btn" href="${a.url}" target="_blank" download>
-              Audio | ${a.bitrate || "Unknown"}
-            </a>
-          `).join("")
-        : "<p>No audio formats</p>";
+    document.getElementById("audioList").innerHTML = audios.length
+      ? audios.map(a => `
+          <a class="download-btn" href="${a.url}" target="_blank">
+            Audio ${a.quality ? `| ${a.quality}` : ""} ${a.bitrate ? `| ${a.bitrate}` : ""}
+          </a>
+        `).join("")
+      : "<p>No audio formats available</p>";
 
   } catch (e) {
     document.getElementById("title").innerText = "Error fetching data";
+    document.getElementById("thumbnail").style.display = "none";
+    console.error(e);
   }
 }
 </script>
