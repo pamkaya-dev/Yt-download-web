@@ -2,74 +2,235 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>DTZ YT DOWNLOADER</title>
+<title>YouTube Downloader</title>
+
+<!-- Font -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
 <style>
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', Arial, sans-serif; }
-body { background:#050505; min-height:100vh; display:flex; justify-content:center; align-items:center; color:#e5e7eb; position:relative; }
-.bubble { position:absolute; bottom:-10px; border-radius:50%; background:#ff0000; opacity:0.6; animation:floatUp linear forwards; }
-@keyframes floatUp { 0% { transform: translateY(0) scale(0.5); opacity:0.3; } 50% { opacity:0.8; } 100% { transform: translateY(-150vh) scale(1); opacity:0; } }
-.container { max-width:700px; width:100%; padding:20px; text-align:center; position:relative; z-index:10; }
-h1 { color:#ff2222; margin-bottom:20px; font-size:2.2rem; }
-.box { width:340px; margin:20px auto; padding:26px; background:#0b0b0b; border-radius:18px; text-align:center; position:relative; overflow:hidden; }
-@property --angle { syntax:"<angle>"; initial-value:0deg; inherits:false; }
-.box::before, .box::after { content:""; position:absolute; inset:-3px; border-radius:20px; background:conic-gradient(from var(--angle), #ff0000, #000, #ff0000); z-index:-1; animation:spin 3.5s linear infinite; }
-.box::before { filter:blur(1.4rem); opacity:.75; }
-@keyframes spin { to{--angle:360deg;} }
-.box h2 { color:#ff0000; margin-bottom:12px; }
-input { width:100%; padding:12px; border-radius:6px; border:none; outline:none; margin-bottom:12px; font-size:16px; background:#111; color:#fff; }
-button.fetch-btn { padding:12px 30px; background:#ff0000; border:none; border-radius:12px; font-weight:600; color:#fff; cursor:pointer; transition:.25s; box-shadow:0 0 10px #ff0000; }
-button.fetch-btn:hover { background:#000; color:#ff0000; box-shadow:0 0 20px #ff0000, 0 0 40px #ff0000; }
-.download-btn { display:block; width:100%; padding:12px; margin:8px 0; background:#ff0000; color:#fff; border:none; border-radius:8px; font-weight:bold; cursor:pointer; transition:.25s; text-decoration:none; }
-.download-btn:hover { background:#000; color:#ff0000; box-shadow:0 0 15px #ff0000; }
-#thumbnail { max-width:480px; width:100%; height:auto; border-radius:12px; margin:20px auto; box-shadow:0 0 20px rgba(255,0,0,0.5); display:none; }
+/* ===== Global ===== */
+* {
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins', Arial, sans-serif;
+}
+
+body {
+  background:#050505;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:#e5e7eb;
+  position:relative;
+}
+/* ===== Bubble Background ===== */
+.bubble {
+  position:absolute;
+  bottom:0;
+  border-radius:50%;
+  background:#ff0000;
+  opacity:0.6;
+  animation:floatUp linear forwards;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(0.5);
+    opacity:0.3;
+  }
+  50% {
+    opacity:0.8;
+  }
+  100% {
+    transform: translateY(-150vh) scale(1);
+    opacity:0;
+  }
+}
+/* ===== Container ===== */
+.container {
+  max-width:700px;
+  width:100%;
+  padding:20px;
+  text-align:center;
+  position:relative;
+  z-index:1;
+}
+
+/* ===== Heading ===== */
+h1 {
+  color:#ff2222;
+  margin-bottom:20px;
+}
+
+/* ===== Boxes (VIDEO / AUDIO) ===== */
+.box {
+  width:340px;
+  margin:20px auto;
+  padding:26px;
+  background:#0b0b0b;
+  border-radius:18px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ===== Animated Border ===== */
+@property --angle {
+  syntax:"<angle>";
+  initial-value:0deg;
+  inherits:false;
+}
+
+.box::before,
+.box::after {
+  content:"";
+  position:absolute;
+  inset:-3px;
+  border-radius:20px;
+  background:conic-gradient(
+    from var(--angle),
+    #ff0000,
+    #000,
+    #ff0000
+  );
+  z-index:-1;
+  animation:spin 3.5s linear infinite;
+}
+
+.box::before {
+  filter:blur(1.4rem);
+  opacity:.75;
+}
+
+@keyframes spin {
+  to{--angle:360deg;}
+}
+
+/* ===== Titles inside boxes ===== */
+.box h2 {
+  color:#ff0000;
+  margin-bottom:12px;
+}
+
+/* ===== Input ===== */
+input {
+  width:100%;
+  padding:12px;
+  border-radius:6px;
+  border:none;
+  outline:none;
+  margin-bottom:12px;
+  font-size:16px;
+}
+
+/* ===== Button ===== */
+button {
+  padding:12px 20px;
+  background:#ff0000;
+  border:none;
+  border-radius:12px;
+  font-weight:600;
+  color:#fff;
+  cursor:pointer;
+  transition:.25s;
+  box-shadow:0 0 10px #ff0000;
+}
+
+button:hover {
+  background:#000;
+  color:#ff0000;
+  box-shadow:0 0 20px #ff0000, 0 0 40px #ff0000;
+}
+
+/* ===== Video & Audio List Styling ===== */
+#videoList, #audioList {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.download-btn {
+  display:inline-block;
+  padding:8px 14px;
+  background:#ff0000;
+  color:#fff;
+  border-radius:6px;
+  text-decoration:none;
+  font-weight:bold;
+  transition:.25s;
+}
+
+.download-btn:hover {
+  background:#000;
+  color:#ff0000;
+  box-shadow:0 0 15px #ff0000;
+}
 </style>
 </head>
 <body>
 
 <div class="container">
+
   <h1>🎬 DTZ YT DOWNLOADER</h1>
 
-  <input id="yturl" type="text" placeholder="Paste YouTube link here">
-  <button class="fetch-btn" onclick="fetchVideo()">Fetch Video</button>
+  <input
+    id="yturl"
+    type="text"
+    placeholder="Paste YouTube link here"
+  >
 
-  <h3 id="title" style="margin-top:20px; min-height:30px;"></h3>
-  <img id="thumbnail" alt="Video Thumbnail">
+  <button onclick="fetchVideo()">Fetch Qualities</button>
+
+  <h3 id="title"></h3>
+
+  <!-- Thumbnail Image -->
+  <img id="thumbnail" alt="Video Thumbnail" style="display:none; max-width:480px; width:100%; height:auto; border-radius:12px; margin:20px auto; box-shadow:0 0 20px rgba(255,0,0,0.5);">
 
   <div class="box">
     <h2>📹 VIDEO</h2>
-    <div id="videoButtons"></div>
+    <div id="videoList"></div>
   </div>
 
   <div class="box">
     <h2>🎵 AUDIO</h2>
-    <div id="audioButtons"></div>
+    <div id="audioList"></div>
   </div>
+
 </div>
 
 <script>
-// Bubbles
+// Bubbles directly appended to body (fixed missing div issue)
 function createBubble() {
   const bubble = document.createElement('div');
   bubble.classList.add('bubble');
+
   const size = Math.random() * 8 + 4;
   bubble.style.width = size + 'px';
   bubble.style.height = size + 'px';
+
   bubble.style.left = Math.random() * 100 + '%';
-  bubble.style.animationDuration = (Math.random() * 3 + 3) + 's';
+
+  bubble.style.animationDuration = (Math.random() * 2 + 2) + 's';
+
   document.body.appendChild(bubble);
-  setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, 7000);
+
+  setTimeout(() => {
+    bubble.remove();
+  }, 4000);
 }
-setInterval(createBubble, 50);
+
+setInterval(createBubble, 20);
 
 async function fetchVideo() {
   const yt = document.getElementById("yturl").value.trim();
-  if (!yt) return alert("Paste a YouTube link!");
+  if (!yt) return alert("Paste YouTube link");
 
   document.getElementById("title").innerText = "Loading...";
   document.getElementById("thumbnail").style.display = "none";
-  document.getElementById("videoButtons").innerHTML = "<p>Loading...</p>";
-  document.getElementById("audioButtons").innerHTML = "<p>Loading...</p>";
+  document.getElementById("videoList").innerHTML = "";
+  document.getElementById("audioList").innerHTML = "";
 
   const API = `https://api.bk9.dev/download/youtube?url=${encodeURIComponent(yt)}`;
 
@@ -78,7 +239,7 @@ async function fetchVideo() {
     const json = await res.json();
 
     if (!json.status || !json.BK9) {
-      document.getElementById("title").innerText = "Invalid link or API error";
+      document.getElementById("title").innerText = "Failed to fetch data";
       return;
     }
 
@@ -87,58 +248,42 @@ async function fetchVideo() {
 
     document.getElementById("title").innerText = data.title || "Unknown Title";
 
-    // Thumbnail
+    // Show improved thumbnail (default → hqdefault)
     const thumbImg = document.getElementById("thumbnail");
-    if (data.thumbnail) {
-      let thumbUrl = data.thumbnail.replace(/default\.(webp|jpg)/, "hqdefault.jpg");
+    let thumbUrl = data.thumbnail || "";
+    if (thumbUrl) {
+      // Replace default.jpg with hqdefault.jpg for better quality
+      thumbUrl = thumbUrl.split("?")[0].replace("default.jpg", "hqdefault.jpg");
       thumbImg.src = thumbUrl;
+      thumbImg.alt = "Thumbnail for " + (data.title || "video");
       thumbImg.style.display = "block";
-    }
-
-    const safeTitle = (data.title || "video").replace(/[/\\?%*:|"<>]/g, '-').replace(/\s+/g, '_').substring(0, 80);
-
-    // Filter video & audio
-    const videoFormats = formats.filter(f => f.has_video === true);
-    const audioFormats = formats.filter(f => f.has_video !== true && f.has_audio === true);
-
-    // Sort by bitrate descending
-    videoFormats.sort((a, b) => (b.bitrate || 0) - (a.bitrate || 0));
-    audioFormats.sort((a, b) => (b.bitrate || 0) - (a.bitrate || 0));
-
-    const bestVideo = videoFormats[0];
-    const mediumVideo = videoFormats.find(f => f.quality && f.quality.includes("360")) || videoFormats[Math.floor(videoFormats.length / 2)];
-    const lowVideo = videoFormats.find(f => f.quality && (f.quality.includes("144") || f.quality.includes("240"))) || videoFormats[videoFormats.length - 2] || videoFormats[videoFormats.length - 1];
-    const bestAudio = audioFormats[0];
-
-    // Video buttons
-    const videoDiv = document.getElementById("videoButtons");
-    videoDiv.innerHTML = "";
-    if (bestVideo) {
-      const ext = bestVideo.mime_type?.includes("webm") ? "webm" : "mp4";
-      videoDiv.innerHTML += `<a class="download-btn" href="\( {bestVideo.url}" download=" \){safeTitle}_High_Quality.${ext}" target="_blank">1. Get High Quality Video</a>`;
-    }
-    if (mediumVideo) {
-      const ext = mediumVideo.mime_type?.includes("webm") ? "webm" : "mp4";
-      videoDiv.innerHTML += `<a class="download-btn" href="\( {mediumVideo.url}" download=" \){safeTitle}_360p.${ext}" target="_blank">2. Get 360p Video</a>`;
-    }
-    if (lowVideo) {
-      const ext = lowVideo.mime_type?.includes("webm") ? "webm" : "mp4";
-      videoDiv.innerHTML += `<a class="download-btn" href="\( {lowVideo.url}" download=" \){safeTitle}_144p.${ext}" target="_blank">3. Get 144p Video</a>`;
-    }
-    if (videoDiv.innerHTML === "") videoDiv.innerHTML = "<p>No video formats</p>";
-
-    // Audio button
-    const audioDiv = document.getElementById("audioButtons");
-    audioDiv.innerHTML = "";
-    if (bestAudio) {
-      const ext = bestAudio.mime_type?.includes("webm") ? "webm" : "m4a";
-      audioDiv.innerHTML = `<a class="download-btn" href="\( {bestAudio.url}" download=" \){safeTitle}_Audio.${ext}" target="_blank">4. Get Audio File</a>`;
     } else {
-      audioDiv.innerHTML = "<p>No audio format</p>";
+      thumbImg.style.display = "none";
     }
+
+    // VIDEO formats
+    const videos = formats.filter(f => f.type === "video");
+    document.getElementById("videoList").innerHTML = videos.length
+      ? videos.map(v => `
+          <a class="download-btn" href="${v.url}" target="_blank">
+            ${v.quality || "Unknown"} ${v.fps ? `| ${v.fps}fps` : ""} ${v.bitrate ? `| ${v.bitrate}` : ""}
+          </a>
+        `).join("")
+      : "<p>No video formats available</p>";
+
+    // AUDIO formats
+    const audios = formats.filter(f => f.type !== "video");
+    document.getElementById("audioList").innerHTML = audios.length
+      ? audios.map(a => `
+          <a class="download-btn" href="${a.url}" target="_blank">
+            Audio ${a.quality ? `| ${a.quality}` : ""} ${a.bitrate ? `| ${a.bitrate}` : ""}
+          </a>
+        `).join("")
+      : "<p>No audio formats available</p>";
 
   } catch (e) {
-    document.getElementById("title").innerText = "Error – Check link or internet";
+    document.getElementById("title").innerText = "Error fetching data";
+    document.getElementById("thumbnail").style.display = "none";
     console.error(e);
   }
 }
