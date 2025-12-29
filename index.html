@@ -4,11 +4,9 @@
 <meta charset="UTF-8">
 <title>YouTube Downloader</title>
 
-<!-- Font -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 
 <style>
-/* ===== Global ===== */
 * {
   margin:0;
   padding:0;
@@ -24,10 +22,8 @@ body {
   align-items:center;
   color:#e5e7eb;
   position:relative;
-  /* overflow:hidden; ← මේක remove කළා scroll එක fix කරන්න */
 }
 
-/* ===== Bubble Background ===== */
 .bubble {
   position:absolute;
   bottom:-10px;
@@ -38,20 +34,11 @@ body {
 }
 
 @keyframes floatUp {
-  0% {
-    transform: translateY(0) scale(0.5);
-    opacity:0.3;
-  }
-  50% {
-    opacity:0.8;
-  }
-  100% {
-    transform: translateY(-150vh) scale(1);
-    opacity:0;
-  }
+  0% { transform: translateY(0) scale(0.5); opacity:0.3; }
+  50% { opacity:0.8; }
+  100% { transform: translateY(-150vh) scale(1); opacity:0; }
 }
 
-/* ===== Container ===== */
 .container {
   max-width:700px;
   width:100%;
@@ -61,14 +48,12 @@ body {
   z-index:10;
 }
 
-/* ===== Heading ===== */
 h1 {
   color:#ff2222;
   margin-bottom:20px;
   font-size:2.2rem;
 }
 
-/* ===== Boxes ===== */
 .box {
   width:340px;
   margin:20px auto;
@@ -80,7 +65,6 @@ h1 {
   overflow:hidden;
 }
 
-/* ===== Animated Border ===== */
 @property --angle {
   syntax:"<angle>";
   initial-value:0deg;
@@ -107,13 +91,11 @@ h1 {
   to{--angle:360deg;}
 }
 
-/* ===== Titles ===== */
 .box h2 {
   color:#ff0000;
   margin-bottom:12px;
 }
 
-/* ===== Input & Button ===== */
 input {
   width:100%;
   padding:12px;
@@ -144,7 +126,6 @@ button:hover {
   box-shadow:0 0 20px #ff0000, 0 0 40px #ff0000;
 }
 
-/* ===== Lists ===== */
 #videoList, #audioList {
   display:flex;
   flex-direction:column;
@@ -168,7 +149,6 @@ button:hover {
   box-shadow:0 0 15px #ff0000;
 }
 
-/* ===== Thumbnail ===== */
 #thumbnail {
   max-width:480px;
   width:100%;
@@ -205,27 +185,20 @@ button:hover {
 </div>
 
 <script>
-// Bubbles
 function createBubble() {
   const bubble = document.createElement('div');
   bubble.classList.add('bubble');
-
   const size = Math.random() * 8 + 4;
   bubble.style.width = size + 'px';
   bubble.style.height = size + 'px';
   bubble.style.left = Math.random() * 100 + '%';
   bubble.style.animationDuration = (Math.random() * 3 + 3) + 's';
-
   document.body.appendChild(bubble);
-
-  setTimeout(() => {
-    if (bubble.parentNode) bubble.remove();
-  }, 7000);
+  setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, 7000);
 }
 
 setInterval(createBubble, 50);
 
-// Main function
 async function fetchVideo() {
   const yt = document.getElementById("yturl").value.trim();
   if (!yt) return alert("Paste a YouTube link!");
@@ -251,49 +224,52 @@ async function fetchVideo() {
 
     document.getElementById("title").innerText = data.title || "Unknown Title";
 
-    // Thumbnail
+    // Thumbnail (hqdefault for better quality)
     const thumbImg = document.getElementById("thumbnail");
     if (data.thumbnail) {
-      let thumbUrl = data.thumbnail.split("?")[0].replace(/default\.webp|default\.jpg/, "hqdefault.jpg");
+      let thumbUrl = data.thumbnail.split("?")[0].replace(/default\.(jpg|webp)/, "hqdefault.jpg");
       thumbImg.src = thumbUrl;
       thumbImg.style.display = "block";
     }
 
-    // Safe title for filename
-    const safeTitle = (data.title || "video").replace(/[/\\?%*:|"<>]/g, '-');
+    // Clean title for filename
+    const safeTitle = (data.title || "video").replace(/[/\\?%*:|"<>]/g, '-').replace(/\s+/g, '_').trim();
 
-    // VIDEO
-    const videos = formats.filter(f => f.has_video === true || f.type === "video");
+    // VIDEO formats (has_video === true)
+    const videos = formats.filter(f => f.has_video === true);
     document.getElementById("videoList").innerHTML = videos.length
       ? videos.map(v => {
-          const q = v.quality || "Unknown";
-          const fps = v.fps ? `| ${v.fps}fps` : "";
-          const br = v.bitrate ? `| ${v.bitrate}` : "";
-          const ext = v.mime_type?.includes("webm") ? "webm" : "mp4";
-          const filename = `${safeTitle} - \( {q} \){fps}\( {br}. \){ext}`;
+          const quality = v.quality || "Unknown";
+          const codec = v.type ? `${v.type}` : "";
+          const fps = v.fps ? `${v.fps}fps` : "";
+          const bitrate = v.bitrate ? `${v.bitrate} kbps` : "";
+          const label = `${quality} ${codec} ${fps} ${bitrate}`.trim();
+          const ext = v.mime?.includes("webm") ? "webm" : "mp4";
+          const filename = `\( {safeTitle}_ \){quality}p.${ext}`;
 
           return `<a class="download-btn" href="\( {v.url}" download=" \){filename}" target="_blank">
-                    ${q} ${fps} ${br}
+                    ${label}
                   </a>`;
         }).join("")
       : "<p>No video formats</p>";
 
-    // AUDIO
-    const audios = formats.filter(f => f.has_video !== true && f.has_audio === true);
+    // AUDIO formats (has_video !== true)
+    const audios = formats.filter(f => f.has_video !== true);
     document.getElementById("audioList").innerHTML = audios.length
       ? audios.map(a => {
-          const br = a.bitrate ? `| ${a.bitrate}` : "";
-          const ext = a.mime_type?.includes("webm") ? "webm" : "m4a";
-          const filename = `\( {safeTitle} - Audio \){br}.${ext}`;
+          const bitrate = a.bitrate ? `${a.bitrate} kbps` : "";
+          const label = `Audio ${bitrate}`.trim();
+          const ext = a.mime?.includes("webm") ? "webm" : "m4a";
+          const filename = `\( {safeTitle}_audio. \){ext}`;
 
           return `<a class="download-btn" href="\( {a.url}" download=" \){filename}" target="_blank">
-                    Audio ${br}
+                    ${label}
                   </a>`;
         }).join("")
       : "<p>No audio formats</p>";
 
   } catch (e) {
-    document.getElementById("title").innerText = "Error – Check internet or link";
+    document.getElementById("title").innerText = "Error – Check link or internet";
     console.error(e);
   }
 }
