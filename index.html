@@ -201,7 +201,7 @@ button:hover {
 </div>
 
 <script>
-// Bubbles animation
+// Bubbles directly appended to body (fixed missing div issue)
 function createBubble() {
   const bubble = document.createElement('div');
   bubble.classList.add('bubble');
@@ -222,11 +222,6 @@ function createBubble() {
 }
 
 setInterval(createBubble, 20);
-
-// Sanitize filename (remove invalid characters)
-function sanitizeFilename(name) {
-  return name.replace(/[\\/:*?"<>|]/g, "_").trim().substring(0, 100);
-}
 
 async function fetchVideo() {
   const yt = document.getElementById("yturl").value.trim();
@@ -251,14 +246,13 @@ async function fetchVideo() {
     const data = json.BK9;
     const formats = data.formats || [];
 
-    const safeTitle = sanitizeFilename(data.title || "video");
-
     document.getElementById("title").innerText = data.title || "Unknown Title";
 
-    // Thumbnail (better quality)
+    // Show improved thumbnail (default → hqdefault)
     const thumbImg = document.getElementById("thumbnail");
     let thumbUrl = data.thumbnail || "";
     if (thumbUrl) {
+      // Replace default.jpg with hqdefault.jpg for better quality
       thumbUrl = thumbUrl.split("?")[0].replace("default.jpg", "hqdefault.jpg");
       thumbImg.src = thumbUrl;
       thumbImg.alt = "Thumbnail for " + (data.title || "video");
@@ -270,31 +264,21 @@ async function fetchVideo() {
     // VIDEO formats
     const videos = formats.filter(f => f.type === "video");
     document.getElementById("videoList").innerHTML = videos.length
-      ? videos.map(v => {
-          const filename = `${safeTitle} - \( {v.quality || "unknown"} \){v.fps ? ` ${v.fps}fps` : ""}.mp4`;
-          return `
-            <a class="download-btn" 
-               href="${v.url}" 
-               download="${filename}">
-              ${v.quality || "Unknown"} ${v.fps ? `| ${v.fps}fps` : ""} ${v.bitrate ? `| ${v.bitrate}` : ""}
-            </a>
-          `;
-        }).join("")
+      ? videos.map(v => `
+          <a class="download-btn" href="${v.url}" target="_blank">
+            ${v.quality || "Unknown"} ${v.fps ? `| ${v.fps}fps` : ""} ${v.bitrate ? `| ${v.bitrate}` : ""}
+          </a>
+        `).join("")
       : "<p>No video formats available</p>";
 
     // AUDIO formats
     const audios = formats.filter(f => f.type !== "video");
     document.getElementById("audioList").innerHTML = audios.length
-      ? audios.map(a => {
-          const filename = `\( {safeTitle} - Audio \){a.quality ? ` ${a.quality}` : ""}.m4a`;
-          return `
-            <a class="download-btn" 
-               href="${a.url}" 
-               download="${filename}">
-              Audio ${a.quality ? `| ${a.quality}` : ""} ${a.bitrate ? `| ${a.bitrate}` : ""}
-            </a>
-          `;
-        }).join("")
+      ? audios.map(a => `
+          <a class="download-btn" href="${a.url}" target="_blank">
+            Audio ${a.quality ? `| ${a.quality}` : ""} ${a.bitrate ? `| ${a.bitrate}` : ""}
+          </a>
+        `).join("")
       : "<p>No audio formats available</p>";
 
   } catch (e) {
