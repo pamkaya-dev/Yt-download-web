@@ -2,18 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>YouTube Downloader</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-
+<title>NURO MD YT DOWNLOADER</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
 <style>
-* {
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:'Poppins', Arial, sans-serif;
-}
-
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; }
 body {
   background:#050505;
   min-height:100vh;
@@ -22,8 +14,8 @@ body {
   align-items:center;
   color:#e5e7eb;
   position:relative;
+  overflow-x:hidden;
 }
-
 .bubble {
   position:absolute;
   bottom:-10px;
@@ -32,253 +24,82 @@ body {
   opacity:0.6;
   animation:floatUp linear forwards;
 }
-
 @keyframes floatUp {
-  0% { transform: translateY(0) scale(0.5); opacity:0.3; }
+  0% { transform:translateY(0) scale(0.5); opacity:0.3; }
   50% { opacity:0.8; }
-  100% { transform: translateY(-150vh) scale(1); opacity:0; }
+  100% { transform:translateY(-150vh) scale(1); opacity:0; }
 }
-
 .container {
-  max-width:700px;
+  max-width:420px;
   width:100%;
   padding:20px;
   text-align:center;
   position:relative;
   z-index:10;
 }
-
 h1 {
   color:#ff2222;
   margin-bottom:20px;
-  font-size:2.2rem;
+  font-size:1.8rem;
 }
-
-.box {
-  width:340px;
-  margin:20px auto;
-  padding:26px;
-  background:#0b0b0b;
-  border-radius:18px;
-  text-align:center;
-  position:relative;
-  overflow:hidden;
-}
-
-@property --angle {
-  syntax:"<angle>";
-  initial-value:0deg;
-  inherits:false;
-}
-
-.box::before,
-.box::after {
-  content:"";
-  position:absolute;
-  inset:-3px;
-  border-radius:20px;
-  background:conic-gradient(from var(--angle), #ff0000, #000, #ff0000);
-  z-index:-1;
-  animation:spin 3.5s linear infinite;
-}
-
-.box::before {
-  filter:blur(1.4rem);
-  opacity:.75;
-}
-
-@keyframes spin {
-  to{--angle:360deg;}
-}
-
-.box h2 {
-  color:#ff0000;
-  margin-bottom:12px;
-}
-
 input {
   width:100%;
-  padding:12px;
-  border-radius:6px;
+  padding:14px;
+  border-radius:10px;
   border:none;
   outline:none;
-  margin-bottom:12px;
+  margin-bottom:15px;
   font-size:16px;
   background:#111;
   color:#fff;
 }
-
-button {
-  padding:12px 30px;
+button.fetch-btn {
+  padding:14px 30px;
   background:#ff0000;
   border:none;
   border-radius:12px;
   font-weight:600;
   color:#fff;
   cursor:pointer;
-  transition:.25s;
-  box-shadow:0 0 10px #ff0000;
-}
-
-button:hover {
-  background:#000;
-  color:#ff0000;
-  box-shadow:0 0 20px #ff0000, 0 0 40px #ff0000;
-}
-
-#videoList, #audioList {
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.download-btn {
-  display:inline-block;
-  padding:10px 16px;
-  background:#ff0000;
-  color:#fff;
-  border-radius:6px;
-  text-decoration:none;
-  font-weight:bold;
-  transition:.25s;
-}
-
-.download-btn:hover {
-  background:#000;
-  color:#ff0000;
   box-shadow:0 0 15px #ff0000;
+  margin-bottom:20px;
 }
-
-#thumbnail {
-  max-width:480px;
+button.fetch-btn:hover {
+  background:#000;
+  color:#ff0000;
+}
+.thumbnail {
   width:100%;
-  height:auto;
-  border-radius:12px;
+  max-width:400px;
+  border-radius:15px;
   margin:20px auto;
-  box-shadow:0 0 20px rgba(255,0,0,0.5);
+  box-shadow:0 0 25px rgba(255,0,0,0.6);
   display:none;
 }
-</style>
-</head>
-<body>
-
-<div class="container">
-  <h1>🎬 DTZ YT DOWNLOADER</h1>
-
-  <input id="yturl" type="text" placeholder="Paste YouTube link here">
-
-  <button onclick="fetchVideo()">Fetch Qualities</button>
-
-  <h3 id="title" style="margin-top:20px; min-height:30px;"></h3>
-
-  <img id="thumbnail" alt="Video Thumbnail">
-
-  <div class="box">
-    <h2>📹 VIDEO</h2>
-    <div id="videoList"></div>
-  </div>
-
-  <div class="box">
-    <h2>🎵 AUDIO</h2>
-    <div id="audioList"></div>
-  </div>
-</div>
-
-<script>
-// Bubbles
-function createBubble() {
-  const bubble = document.createElement('div');
-  bubble.classList.add('bubble');
-  const size = Math.random() * 8 + 4;
-  bubble.style.width = size + 'px';
-  bubble.style.height = size + 'px';
-  bubble.style.left = Math.random() * 100 + '%';
-  bubble.style.animationDuration = (Math.random() * 3 + 3) + 's';
-  document.body.appendChild(bubble);
-  setTimeout(() => { if (bubble.parentNode) bubble.remove(); }, 7000);
+.menu-box {
+  background:#0b0b0b;
+  border-radius:18px;
+  padding:20px;
+  margin:20px 0;
+  border:2px solid #ff0000;
+  box-shadow:0 0 20px rgba(255,0,0,0.4);
+  display:none;
 }
-
-setInterval(createBubble, 50);
-
-async function fetchVideo() {
-  const yt = document.getElementById("yturl").value.trim();
-  if (!yt) return alert("Paste a YouTube link!");
-
-  document.getElementById("title").innerText = "Loading...";
-  document.getElementById("thumbnail").style.display = "none";
-  document.getElementById("videoList").innerHTML = "";
-  document.getElementById("audioList").innerHTML = "";
-
-  const API = `https://api.bk9.dev/download/youtube?url=${encodeURIComponent(yt)}`;
-
-  try {
-    const res = await fetch(API);
-    const json = await res.json();
-
-    if (!json.status || !json.BK9) {
-      document.getElementById("title").innerText = "Invalid link or API error";
-      return;
-    }
-
-    const data = json.BK9;
-    const formats = data.formats || [];
-
-    document.getElementById("title").innerText = data.title || "Unknown Title";
-
-    // Thumbnail fix
-    const thumbImg = document.getElementById("thumbnail");
-    if (data.thumbnail) {
-      // default.webp → hqdefault.jpg
-      let thumbUrl = data.thumbnail.replace("default.webp", "hqdefault.jpg");
-      thumbImg.src = thumbUrl;
-      thumbImg.style.display = "block";
-    }
-
-    // Safe title for filename
-    const safeTitle = (data.title || "video").replace(/[/\\?%*:|"<>]/g, '-').replace(/\s+/g, '_').substring(0, 100);
-
-    // VIDEO (has_video: true)
-    const videos = formats.filter(f => f.has_video === true);
-    document.getElementById("videoList").innerHTML = videos.length
-      ? videos.map(v => {
-          const q = v.quality || "";
-          const type = v.type ? `(${v.type})` : "";
-          const fps = v.fps ? `| ${v.fps}fps` : "";
-          const br = v.bitrate ? `| ${v.bitrate}` : "";
-          const label = `${q} ${type} ${fps} ${br}`.trim();
-
-          const isWebm = v.mime_type && v.mime_type.includes("webm");
-          const ext = isWebm ? "webm" : "mp4";
-          const filename = `\( {safeTitle}_ \){q.replace(/\s+/g, '')}.${ext}`;
-
-          return `<a class="download-btn" href="\( {v.url}" download=" \){filename}" target="_blank">
-                    ${label}
-                  </a>`;
-        }).join("")
-      : "<p>No video formats</p>";
-
-    // AUDIO (has_video !== true, but has_audio true)
-    const audios = formats.filter(f => f.has_video !== true && f.has_audio === true);
-    document.getElementById("audioList").innerHTML = audios.length
-      ? audios.map(a => {
-          const br = a.bitrate ? `| ${a.bitrate}` : "";
-          const label = `Audio ${br}`.trim();
-
-          const isWebm = a.mime_type && a.mime_type.includes("webm");
-          const ext = isWebm ? "webm" : "m4a";
-          const filename = `\( {safeTitle}_audio. \){ext}`;
-
-          return `<a class="download-btn" href="\( {a.url}" download=" \){filename}" target="_blank">
-                    ${label}
-                  </a>`;
-        }).join("")
-      : "<p>No audio formats</p>";
-
-  } catch (e) {
-    document.getElementById("title").innerText = "Error – Check internet or link";
-    console.error(e);
-  }
+.menu-title {
+  color:#ff0000;
+  font-size:1.4rem;
+  margin-bottom:15px;
 }
-</script>
-</body>
-</html>
+.menu-btn {
+  display:block;
+  width:100%;
+  padding:16px;
+  margin:12px 0;
+  background:#ff0000;
+  color:#fff;
+  border:none;
+  border-radius:12px;
+  font-weight:600;
+  font-size:1.1rem;
+  cursor:pointer;
+  transition
