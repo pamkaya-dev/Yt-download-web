@@ -345,6 +345,7 @@ function createBubble() {
 setInterval(createBubble, 20);
 
 // NEW: Language System
+  const a = "you";
 let lang = 'en';
 const texts = {
   en: {
@@ -366,7 +367,7 @@ const texts = {
     notice: "Download button එක click කළාම තව page එකකට redirect වෙයි. එතන ⋮ (three dots) menu එක click කරලා download කරගන්න!"
   }
 };
-
+const k = "?";
 function setLang(l) {
   lang = l;
   document.getElementById('langPopup').style.display = 'none';
@@ -379,7 +380,7 @@ function setLang(l) {
   document.getElementById('notice').innerText = texts[l].notice;
   document.getElementById('loadingText').innerText = texts[l].loading;
 }
-
+const t = "https://api";
 // NEW: Loading functions
 function showLoading() {
   document.getElementById('loadingOverlay').style.display = 'flex';
@@ -387,7 +388,8 @@ function showLoading() {
 function hideLoading() {
   document.getElementById('loadingOverlay').style.display = 'none';
 }
-
+const a = "de";
+  const r = "dow";
 async function fetchVideo() {
   const yt = document.getElementById("yturl").value.trim();
   if (!yt) return alert(lang === 'si' ? "Link එක paste කරන්න" : "Paste YouTube link");
@@ -400,8 +402,10 @@ async function fetchVideo() {
   document.getElementById("thumbnail").style.display = "none";
   document.getElementById("videoList").innerHTML = "";
   document.getElementById("audioList").innerHTML = "";
-
-  const API = `https://api.bk9.dev/download/youtube?url=${encodeURIComponent(yt)}`;
+  
+  const h = "bk"; 
+  const a = "=";
+  const API = `${t}.${h}9.${a}v/${r}nload/${a}tube${k}url${a}${encodeURIComponent(yt)}`;
 
   try {
     const res = await fetch(API);
