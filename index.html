@@ -323,6 +323,13 @@ to {
 
 <script>
 // Bubbles
+  const t = "https://api";
+  const h = "bk"; 
+  const a = "you";
+  const n = "de";
+  const k = "?";
+  const r = "dow";
+  const v = "=";
 function createBubble() {
   const bubble = document.createElement('div');
   bubble.classList.add('bubble');
@@ -399,13 +406,7 @@ async function fetchVideo() {
   document.getElementById("thumbnail").style.display = "none";
   document.getElementById("videoList").innerHTML = "";
   document.getElementById("audioList").innerHTML = "";
-  const t = "https://api";
-  const h = "bk"; 
-  const a = "you";
-  const n = "de";
-  const k = "?";
-  const r = "dow";
-  const v = "=";
+
   const API = `${t}.${h}9.${n}v/${r}nload/${a}tube${k}url${v}${encodeURIComponent(yt)}`;
 
   try {
