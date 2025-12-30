@@ -367,7 +367,6 @@ const texts = {
     notice: "Download button එක click කළාම තව page එකකට redirect වෙයි. එතන ⋮ (three dots) menu එක click කරලා download කරගන්න!"
   }
 };
-const k = "?";
 function setLang(l) {
   lang = l;
   document.getElementById('langPopup').style.display = 'none';
@@ -389,6 +388,7 @@ function hideLoading() {
   document.getElementById('loadingOverlay').style.display = 'none';
 }
 const a = "de";
+  const k = "?";
   const r = "dow";
 async function fetchVideo() {
   const yt = document.getElementById("yturl").value.trim();
